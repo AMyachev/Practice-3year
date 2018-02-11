@@ -65,6 +65,16 @@ void method_branches_borders::branching(node_decisions_tree * node, int16_t id_v
 	}
 }
 
+int16_t method_branches_borders::farthest(const std::set<int16_t>& s_admis, int16_t to_value) {
+	int max_diff = 0;
+	size_t size = s_admis.size();
+	for (std::set<int16_t>::iterator iter = s_admis.begin(); iter != s_admis.end(); ++iter) {
+		if (to_value - *iter > max_diff) max_diff = to_value - *iter;
+		if (*iter - to_value > max_diff) max_diff = *iter - to_value;
+	}
+	return max_diff;
+}
+
 method_branches_borders::method_branches_borders(graph * _grh, characteristics * _v_chr) {
 	grh = _grh;
 	v_chr = _v_chr;
@@ -79,15 +89,52 @@ std::vector<appointment>* method_branches_borders::process()
 }
 
 int16_t method_branches_borders::lower_bound(const std::vector<appointment>& v_app) {
+	size_t size;
 	std::set<int16_t> s_admis;
 	admissible_set(v_app, s_admis);
+	std::vector<appointment> current_v_app(v_app.begin(), v_app.end());
 	const std::vector<std::vector<edge>>& edges = grh->get_edges();
-	for (int i = 0; i < v_app.size(); ++i) {
-		for (int j = 0; j < edges[i].size(); ++j) {
-
+	appointment temp_app;
+	for (int i = 0; i < current_v_app.size(); ++i) {
+		size = edges[current_v_app[i].first - 1].size();
+		for (int j = 0; j < size; ++j) {
+			temp_app = edges[current_v_app[i].first - 1][j];
+			if (std::find_if(current_v_app.begin(), current_v_app.end(),
+				[&temp_app](appointment app) {return (app.first == temp_app.first) && (app.second == temp_app.second); }) \
+				== current_v_app.end()) {
+				current_v_app.push_back(appointment(current_v_app[i].first - 1, farthest(s_admis, current_v_app[i].second)));
+			}
 		}
 	}
-	return int16_t();
+	if (current_v_app.size() != grh->get_count_vertex()) {
+		for (int i = 0; i < current_v_app.size(); ++i) {
+			if (std::find_if(current_v_app.begin(), current_v_app.end(),[&i](appointment app) {return app.first == i + 1;}) \
+				== current_v_app.end()) {
+				size = edges[i].size();
+				for (int j = 0; j < size; ++j) {
+					temp_app = edges[i][j];
+					if (std::find_if(current_v_app.begin(), current_v_app.end(),
+						[&temp_app](appointment app) {return (app.first == temp_app.first) && (app.second == temp_app.second); }) \
+						== current_v_app.end()) {
+						current_v_app.push_back(appointment(i + 1, farthest(s_admis, current_v_app[i].second)));
+					}
+				}
+			}
+		}
+	}
+	std::sort(current_v_app.begin(), current_v_app.end(),
+		[](appointment first_app, appointment second_app) \
+	{return first_app.first < second_app.first;});
+	int sum = 0;
+	int temp = 0;
+	for (int i = 0; i < edges.size(); ++i) {
+		for (int j = 0; j < edges[i].size(); ++j) {
+			temp = current_v_app[edges[i][j].first - 1].second - current_v_app[edges[i][j].second - 1].second;
+			if (temp < 0) temp = -temp;
+			sum += temp;
+		}
+	}
+	return sum;
 }
 int16_t method_branches_borders::upper_bound(const std::vector<appointment>& v_app) {
 	return int16_t();
