@@ -45,13 +45,12 @@ class method_branches_borders {
 	characteristics* v_chr;
 	node_decisions_tree* root;
 	void branching(node_decisions_tree* node, int16_t ind_vertex);
-	int16_t farthest(const std::set<int16_t>&, int16_t to_value);
 	void admissible_set(const std::vector<appointment>& v_app, std::set<int16_t>& s_admis);
 public:
 	method_branches_borders(graph* _grh, characteristics* _v_chr);
 	std::vector<appointment>* process();
-	int16_t lower_bound(const std::vector<appointment>& v_app);
-	int16_t upper_bound(const std::vector<appointment>& v_app);
+	int16_t lower_bound(const std::vector<appointment>& _v_app);
+	int16_t upper_bound(const std::vector<appointment>& _v_app);
 };
 
 class bad_input {};

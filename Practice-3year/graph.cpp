@@ -65,7 +65,7 @@ void method_branches_borders::branching(node_decisions_tree * node, int16_t id_v
 	}
 }
 
-int16_t method_branches_borders::farthest(const std::set<int16_t>& s_admis, int16_t to_value) {
+/*int16_t method_branches_borders::farthest(const std::set<int16_t>& s_admis, int16_t to_value) {
 	int max_diff = 0;
 	size_t size = s_admis.size();
 	for (std::set<int16_t>::iterator iter = s_admis.begin(); iter != s_admis.end(); ++iter) {
@@ -73,7 +73,7 @@ int16_t method_branches_borders::farthest(const std::set<int16_t>& s_admis, int1
 		if (*iter - to_value > max_diff) max_diff = *iter - to_value;
 	}
 	return max_diff;
-}
+}*/
 
 method_branches_borders::method_branches_borders(graph * _grh, characteristics * _v_chr) {
 	grh = _grh;
@@ -88,7 +88,69 @@ std::vector<appointment>* method_branches_borders::process()
 	return nullptr;
 }
 
-int16_t method_branches_borders::lower_bound(const std::vector<appointment>& v_app) {
+int16_t method_branches_borders::lower_bound(const std::vector<appointment>& _v_app) {
+	std::set<int16_t> s_admis;
+	admissible_set(_v_app, s_admis);
+	std::vector<appointment> v_app(_v_app.begin(), _v_app.end());
+	size_t size = v_app.size();
+	size_t count = grh->get_count_vertex() - size;
+	std::set<int16_t>::iterator iter = s_admis.begin();
+	for (int i = 0; i < count; ++i) {
+		v_app.push_back(appointment(i + size + 1, *(iter++)));
+	}
+	const std::vector<std::vector<edge>>& edges = grh->get_edges();
+	edge temp_edge;
+	int sum = 0;
+	int temp = 0;
+	for (int i = 0; i < edges.size(); ++i) {
+		for (int j = 0; j < edges[i].size(); ++j) {
+			temp_edge = edges[i][j];
+			temp = v_app[temp_edge.first - 1].second - v_app[temp_edge.second - 1].second;
+			if (temp < 0) temp = -temp;
+			sum += temp;
+		}
+	}
+	return sum;
+}
+
+int16_t method_branches_borders::upper_bound(const std::vector<appointment>& _v_app) {
+	std::set<int16_t> s_admis;
+	admissible_set(_v_app, s_admis);
+	std::vector<appointment> v_app(_v_app.begin(), _v_app.end());
+	int w_max = *(--s_admis.end());
+	int w_min_ad = *(s_admis.begin());
+	int w_min = v_app[0].second;
+	int w_max_v = v_app[0].second;
+	for (int i = 1; i < v_app.size(); ++i) {
+		if (w_min > v_app[i].second) w_min = v_app[i].second;
+		if (w_max_v < v_app[i].second) w_max_v = v_app[i].second;
+	}
+	if (w_max < w_min) {
+		w_max = w_min_ad;
+		w_min = w_max_v;
+	}
+	const std::vector<std::vector<edge>>& edges = grh->get_edges();
+	edge temp_edge;
+	int sum = 0;
+	int temp = 0;
+	for (int i = 0; i < edges.size(); ++i) {
+		for (int j = 0; j < edges[i].size(); ++j) {
+			temp_edge = edges[i][j];
+			if ((temp_edge.first - 1 < v_app.size()) && (temp_edge.second - 1 < v_app.size())) {
+				temp = v_app[temp_edge.first - 1].second - v_app[temp_edge.second - 1].second;
+			}
+			else {
+				temp = w_max - w_min;
+			}
+			if (temp < 0) temp = -temp;
+			sum += temp;
+		}
+	}
+	return sum;
+}
+
+
+/*int16_t method_branches_borders::lower_bound(const std::vector<appointment>& v_app) {  
 	size_t size;
 	std::set<int16_t> s_admis;
 	admissible_set(v_app, s_admis);
@@ -135,7 +197,4 @@ int16_t method_branches_borders::lower_bound(const std::vector<appointment>& v_a
 		}
 	}
 	return sum;
-}
-int16_t method_branches_borders::upper_bound(const std::vector<appointment>& v_app) {
-	return int16_t();
-}
+}*/
