@@ -32,9 +32,7 @@ void graph::read_edges(std::istream_iterator<int16_t>& iter) {
 	count_vertex = edges.size();
 }
 
-int16_t graph::get_count_vertex() const {
-	return count_vertex;
-}
+inline int16_t graph::get_count_vertex() const { return count_vertex; }
 
 const std::vector<std::vector<edge>>& graph::get_edges() const
 {
@@ -64,7 +62,9 @@ void method_branches_borders::branching(node_decisions_tree * node, int16_t id_v
 		node->v_pnode[i]->v_app.push_back(appointment(id_vertex, (*v_chr)[i]));
 	}
 }
-
+int abs(int val) {
+	return (val < 0) ? -val : val;
+}
 /*int16_t method_branches_borders::farthest(const std::set<int16_t>& s_admis, int16_t to_value) {
 	int max_diff = 0;
 	size_t size = s_admis.size();
@@ -117,18 +117,9 @@ int16_t method_branches_borders::upper_bound(const std::vector<appointment>& _v_
 	std::set<int16_t> s_admis;
 	admissible_set(_v_app, s_admis);
 	std::vector<appointment> v_app(_v_app.begin(), _v_app.end());
-	int w_max = *(--s_admis.end());
+	int size = v_app.size();
+	int w_max_ad = *(--s_admis.end());
 	int w_min_ad = *(s_admis.begin());
-	int w_min = v_app[0].second;
-	int w_max_v = v_app[0].second;
-	for (int i = 1; i < v_app.size(); ++i) {
-		if (w_min > v_app[i].second) w_min = v_app[i].second;
-		if (w_max_v < v_app[i].second) w_max_v = v_app[i].second;
-	}
-	if (w_max < w_min) {
-		w_max = w_min_ad;
-		w_min = w_max_v;
-	}
 	const std::vector<std::vector<edge>>& edges = grh->get_edges();
 	edge temp_edge;
 	int sum = 0;
@@ -136,14 +127,25 @@ int16_t method_branches_borders::upper_bound(const std::vector<appointment>& _v_
 	for (int i = 0; i < edges.size(); ++i) {
 		for (int j = 0; j < edges[i].size(); ++j) {
 			temp_edge = edges[i][j];
-			if ((temp_edge.first - 1 < v_app.size()) && (temp_edge.second - 1 < v_app.size())) {
+			bool check1 = temp_edge.first - 1 < size;
+			bool check2 = temp_edge.second - 1 < size;
+			if (check1 && check2) {
 				temp = v_app[temp_edge.first - 1].second - v_app[temp_edge.second - 1].second;
 			}
-			else {
-				temp = w_max - w_min;
+			else if (check1) {
+				temp = v_app[temp_edge.first - 1].second -
+					((abs(v_app[temp_edge.first - 1].second - w_max_ad) > abs(v_app[temp_edge.first - 1].second - w_min_ad)) ?
+					w_max_ad : w_min_ad);
 			}
-			if (temp < 0) temp = -temp;
-			sum += temp;
+			else if (check2) {
+				temp = v_app[temp_edge.second - 1].second -
+					((abs(v_app[temp_edge.second - 1].second - w_max_ad) > abs(v_app[temp_edge.second - 1].second - w_min_ad)) ?
+					w_max_ad : w_min_ad);
+			}
+			else {
+				temp = w_max_ad - w_min_ad;
+			}
+			sum += abs(temp);
 		}
 	}
 	return sum;

@@ -18,7 +18,7 @@ public:
 	void add(edge _edge);
 	void print();
 	void read_edges(std::istream_iterator<int16_t>& iter);
-	int16_t get_count_vertex() const;
+	inline int16_t get_count_vertex() const;
 	const std::vector<std::vector<edge>>& get_edges() const;
 };
 
