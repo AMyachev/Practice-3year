@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 #include <set>
+#include <deque>
 
 typedef std::pair<int16_t, int16_t> edge;
 typedef std::pair<int16_t, int16_t> appointment;
@@ -37,18 +38,18 @@ struct node_decisions_tree {
 	node_decisions_tree() {}
 	node_decisions_tree(std::vector<appointment> _v_app);
 	std::vector<appointment> v_app;
-	std::vector<node_decisions_tree*> v_pnode;
+	//std::vector<node_decisions_tree*> v_pnode;
 };
 
 class method_branches_borders {
 	graph* grh;
 	characteristics* v_chr;
 	node_decisions_tree* root;
-	void branching(node_decisions_tree* node, int16_t ind_vertex);
 	void admissible_set(const std::vector<appointment>& v_app, std::set<int16_t>& s_admis);
 public:
 	method_branches_borders(graph* _grh, characteristics* _v_chr);
-	std::vector<appointment>* process();
+	std::pair<node_decisions_tree*, int>*  process();
+	void complete_best_solution(std::vector<appointment>& v_app);
 	int16_t lower_bound(const std::vector<appointment>& _v_app);
 	int16_t upper_bound(const std::vector<appointment>& _v_app);
 };

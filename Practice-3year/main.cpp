@@ -15,11 +15,15 @@ int main() {
 	for (int i = 0; i < v_chr.size(); ++i)
 		std::cout << v_chr[i] << " ";
 	std::cout << std::endl;
-	v_app.push_back(appointment(1, 7));
 	method_branches_borders alg(&grh, &v_chr);
 	std::cout <<alg.lower_bound(v_app) << std::endl;
 	std::cout << alg.upper_bound(v_app) << std::endl;
-
+	std::pair<node_decisions_tree*, int>* result = alg.process();
+	alg.complete_best_solution(result->first->v_app);
+	std::cout << result->second << std::endl;
+	for (int i = 0; i < result->first->v_app.size(); ++i) {
+		std::cout << result->first->v_app[i].first << "  " << result->first->v_app[i].second << std:: endl;
+	}
 	
 	/*try {
 
