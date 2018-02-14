@@ -1,57 +1,63 @@
 #include "graph.h"
 
-int abs(int val) {
-	return (val < 0) ? -val : val;
-}
-graph::graph(std::istream_iterator<int16_t>& iter) {
-	read_edges(iter);
-}
 
-void graph::add(edge _edge) {
-	if ((edges.size() < _edge.first)||(edges.size() < _edge.second)) {
-		size_t size = edges.size();
-		int count_new_vertex = (_edge.first > _edge.second) ? (_edge.first - size) :
-			(_edge.second - size);
-		for (int i = 0; i < count_new_vertex; ++i) {
-			edges.push_back(std::vector<edge>());
-		}
-	}
-	edges[_edge.first - 1].push_back(_edge);
+/****************************graph*********************************************/
+graph::graph(vector<vector<edge>>* _edges):edges(_edges), count_vertex(_edges->size()), copy_counter(1){}
+
+graph::graph(const graph & grh)
+{
+	this->copy_counter = grh.copy_counter;
+	this->count_vertex = grh.count_vertex;
+	this->edges = grh.edges;
+	++copy_counter;
 }
 
 void graph::print() {
-	for (int i = 0; i < edges.size(); ++i) {
-		for (int j = 0; j < edges[i].size(); ++j) {
-			std::cout << edges[i][j].first << "  " << edges[i][j].second << std::endl;
+	for (int i = 0; i < edges->size(); ++i) {
+		for (int j = 0; j < (*edges)[i].size(); ++j) {
+			std::cout << (*edges)[i][j].first << "  " << (*edges)[i][j].second << std::endl;
 		}
 	}
 }
 
-void graph::read_edges(std::istream_iterator<int16_t>& iter) {
-	int count_edges = *(iter++);
-	for (int i = 0; i < count_edges; ++i) {
-		edge grh_edge;
-		grh_edge.first = *(iter++);
-		grh_edge.second = *(iter++);
-		add(grh_edge);
-	}
-	count_vertex = edges.size();
+graph::~graph() {
+	--copy_counter;
+	if (copy_counter == 0) delete edges;
 }
 
-inline int16_t graph::get_count_vertex() const { return count_vertex; }
 
-const std::vector<std::vector<edge>>& graph::get_edges() const
-{
-	return edges;
-}
-
-/*false - incorrect; true - correct data*/
+/****************************auxiliary*****************************************/
 bool verify_input_data(graph grh, characteristics v_chr) {
 	return grh.get_count_vertex() <= v_chr.size();
 }
 
-node_decisions_tree::node_decisions_tree(std::vector<appointment> _v_app): v_app(_v_app.begin(), _v_app.end()) {}
+vector<vector<edge>>* read_edges(std::istream_iterator<int16_t>& iter) {
+	edge _edge;
+	vector<vector<edge>>* edges = new vector<vector<edge>>();
+	int count_edges = *(iter++);
+	for (int i = 0; i < count_edges; ++i) {
+		_edge.first = *(iter++);
+		_edge.second = *(iter++);
 
+		if ((edges->size() < _edge.first) || (edges->size() < _edge.second)) {
+			size_t size = edges->size();
+			int count_new_vertex = (_edge.first > _edge.second) ? (_edge.first - size) :
+				(_edge.second - size);
+			for (int i = 0; i < count_new_vertex; ++i) {
+				edges->push_back(std::vector<edge>());
+			}
+		}
+		(*edges)[_edge.first - 1].push_back(_edge);
+	}
+	return edges;
+}
+
+int abs(int val) {
+	return (val < 0) ? -val : val;
+}
+
+
+/****************************method_branches_borders***************************/
 void method_branches_borders::admissible_set(const std::vector<appointment>& v_app, std::set<int16_t>& s_admis)
 {
 	s_admis.insert(v_chr->begin(), v_chr->end());
@@ -60,23 +66,17 @@ void method_branches_borders::admissible_set(const std::vector<appointment>& v_a
 	}
 }
 
-method_branches_borders::method_branches_borders(graph * _grh, characteristics * _v_chr) {
-	grh = _grh;
-	v_chr = _v_chr;
-	root = new node_decisions_tree();
-}
-
 std::pair<node_decisions_tree*, int>* method_branches_borders::process()
 {
 	size_t size = 0;
 	node_decisions_tree* temp_node = nullptr;
 	std::deque<node_decisions_tree*> algorithm_path;
-	node_decisions_tree* best_node = root;
-	int best_lower_bound = lower_bound(root->v_app);
+	node_decisions_tree* best_node = new node_decisions_tree();
+	int best_lower_bound = lower_bound(best_node->v_app);
 	int current_upper_bound = 0;
 	int current_lower_bound = 0;
 
-	algorithm_path.push_back(root);
+	algorithm_path.push_back(best_node);
 	for (int i = 0; i < algorithm_path.size(); ++i) {
 		current_upper_bound = upper_bound(algorithm_path[i]->v_app);
 		current_lower_bound = lower_bound(algorithm_path[i]->v_app);
@@ -126,13 +126,13 @@ int16_t method_branches_borders::lower_bound(const std::vector<appointment>& _v_
 	for (int i = 0; i < count; ++i) {
 		v_app.push_back(appointment(i + size + 1, *(iter++)));
 	}
-	const std::vector<std::vector<edge>>& edges = grh->get_edges();
+	const std::vector<std::vector<edge>>* edges = grh->get_edges();
 	edge temp_edge;
 	int sum = 0;
 	int temp = 0;
-	for (int i = 0; i < edges.size(); ++i) {
-		for (int j = 0; j < edges[i].size(); ++j) {
-			temp_edge = edges[i][j];
+	for (int i = 0; i < (*edges).size(); ++i) {
+		for (int j = 0; j < (*edges)[i].size(); ++j) {
+			temp_edge = (*edges)[i][j];
 			temp = v_app[temp_edge.first - 1].second - v_app[temp_edge.second - 1].second;
 			if (temp < 0) temp = -temp;
 			sum += temp;
@@ -148,13 +148,13 @@ int16_t method_branches_borders::upper_bound(const std::vector<appointment>& _v_
 	int size = v_app.size();
 	int w_max_ad = *(--s_admis.end());
 	int w_min_ad = *(s_admis.begin());
-	const std::vector<std::vector<edge>>& edges = grh->get_edges();
+	const std::vector<std::vector<edge>>* edges = grh->get_edges();
 	edge temp_edge;
 	int sum = 0;
 	int temp = 0;
-	for (int i = 0; i < edges.size(); ++i) {
-		for (int j = 0; j < edges[i].size(); ++j) {
-			temp_edge = edges[i][j];
+	for (int i = 0; i < (*edges).size(); ++i) {
+		for (int j = 0; j < (*edges)[i].size(); ++j) {
+			temp_edge = (*edges)[i][j];
 			bool check1 = temp_edge.first - 1 < size;
 			bool check2 = temp_edge.second - 1 < size;
 			if (check1 && check2) {

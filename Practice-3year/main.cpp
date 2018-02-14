@@ -1,18 +1,21 @@
 #include "graph.h"
+#include <chrono>
 
 #include <fstream>
-
+using std::cout;
 /*numbering of vertices from the number one*/
 
 int main() {
-	std::ifstream fin("D:\\practice1.txt");
+	auto start_time = std::chrono::steady_clock::now();
+	cout << sizeof(node_decisions_tree);
+	std::ifstream fin("D:\\practice6.txt");
 	std::istream_iterator<int16_t> iter(fin);
-	graph grh(iter);
+	graph grh(read_edges(iter));
 	characteristics v_chr(iter);
-	if (verify_input_data(grh, v_chr) == false) std::cout << "input data do not satisfy the restriction of injection" << std::endl;
+	if (verify_input_data(grh, v_chr) == false)
+		std::cout << "input data do not satisfy the restriction of injection" << std::endl;
 	grh.print();
-	std::vector<appointment> v_app;
-	for (int i = 0; i < v_chr.size(); ++i)
+	for (register int i = 0; i < v_chr.size(); ++i)
 		std::cout << v_chr[i] << " ";
 	std::cout << std::endl;
 	method_branches_borders alg(&grh, &v_chr);
@@ -22,16 +25,10 @@ int main() {
 	for (int i = 0; i < result->first->v_app.size(); ++i) {
 		std::cout << result->first->v_app[i].first << "  " << result->first->v_app[i].second << std:: endl;
 	}
-	
-	/*try {
 
-		for (int i = 0; i < v_chr.size(); ++i)
-			std::cout << v_chr[i] << " ";
-		std::cout << std::endl;
-	}
-	catch (bad_input) {
-		std::cout << "input data do not satisfy the restriction of injection" << std::endl;
-	}*/
+	auto end_time = std::chrono::steady_clock::now();
+	auto elapsed_ns = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+	std::cout << elapsed_ns.count() << " ns\n";
 	system("pause");
 	return 0;
 }
