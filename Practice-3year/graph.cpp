@@ -8,8 +8,11 @@ graph::graph(std::istream_iterator<int16_t>& iter) {
 }
 
 void graph::add(edge _edge) {
-	if (edges.size() < _edge.first) {
-		for (int i = 0; i < _edge.first - edges.size(); ++i) {
+	if ((edges.size() < _edge.first)||(edges.size() < _edge.second)) {
+		size_t size = edges.size();
+		int count_new_vertex = (_edge.first > _edge.second) ? (_edge.first - size) :
+			(_edge.second - size);
+		for (int i = 0; i < count_new_vertex; ++i) {
 			edges.push_back(std::vector<edge>());
 		}
 	}
