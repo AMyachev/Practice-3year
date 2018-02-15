@@ -67,11 +67,11 @@ void method_branches_borders::admissible_set(const vector<int16_t>& v_app, std::
 	}
 }
 
-std::pair<node_decisions_tree*, int>* method_branches_borders::process()
+std::pair<node_decisions_tree, int>* method_branches_borders::process()
 {
 	size_t size = 0;
 	node_decisions_tree* temp_node = nullptr;
-	std::deque<node_decisions_tree*> algorithm_path;
+	deque algorithm_path;
 	node_decisions_tree* best_node = new node_decisions_tree();
 	int best_lower_bound = lower_bound(best_node->v_app);
 	int current_upper_bound = 0;
@@ -100,8 +100,7 @@ std::pair<node_decisions_tree*, int>* method_branches_borders::process()
 			}
 		}
 	}
-
-	return new std::pair<node_decisions_tree*, int>(best_node, best_lower_bound);
+	return new std::pair<node_decisions_tree, int>(*best_node, best_lower_bound);
 }
 
 int16_t method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
@@ -166,15 +165,6 @@ int16_t method_branches_borders::upper_bound(const vector<int16_t>& _v_app) {
 	}
 	return sum;
 }
-
-/*int16_t method_branches_borders::passage_in_depth()
-{
-	std::set<int16_t> s_admis;
-	std::vector<appointment> v_app;
-	admissible_set(v_app, s_admis);
-
-
-}*/
 
 void method_branches_borders::complete_best_solution(vector<int16_t>& v_app)
 {

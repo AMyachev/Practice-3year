@@ -7,9 +7,8 @@ using std::cout;
 
 int main() {
 	auto start_time = std::chrono::steady_clock::now();
-	std::ifstream fin("D:\\practice6.txt");
+	std::ifstream fin("D:\\practice.txt");
 	std::istream_iterator<int16_t> iter(fin);
-	//cout << sizeof(node_decisions_tree);
 	graph grh(read_edges(iter));
 	characteristics v_chr(iter);
 	if (verify_input_data(grh, v_chr) == false)
@@ -19,11 +18,11 @@ int main() {
 		std::cout << v_chr[i] << " ";
 	std::cout << std::endl;
 	method_branches_borders alg(&grh, &v_chr);
-	std::pair<node_decisions_tree*, int>* result = alg.process();
-	alg.complete_best_solution(result->first->v_app);
+	std::pair<node_decisions_tree, int>* result = alg.process();
+	alg.complete_best_solution(result->first.v_app);
 	std::cout << result->second << std::endl;
-	for (int i = 0; i < result->first->v_app.size(); ++i) {
-		std::cout << result->first->v_app[i] << "  " << result->first->v_app[i]  << std:: endl;
+	for (int i = 0; i < result->first.v_app.size(); ++i) {
+		std::cout << result->first.v_app[i] << "  " << result->first.v_app[i]  << std:: endl;
 	}
 
 
