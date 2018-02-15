@@ -7,9 +7,9 @@ using std::cout;
 
 int main() {
 	auto start_time = std::chrono::steady_clock::now();
-	cout << sizeof(node_decisions_tree);
 	std::ifstream fin("D:\\practice6.txt");
 	std::istream_iterator<int16_t> iter(fin);
+	//cout << sizeof(node_decisions_tree);
 	graph grh(read_edges(iter));
 	characteristics v_chr(iter);
 	if (verify_input_data(grh, v_chr) == false)
@@ -23,12 +23,14 @@ int main() {
 	alg.complete_best_solution(result->first->v_app);
 	std::cout << result->second << std::endl;
 	for (int i = 0; i < result->first->v_app.size(); ++i) {
-		std::cout << result->first->v_app[i].first << "  " << result->first->v_app[i].second << std:: endl;
+		std::cout << result->first->v_app[i] << "  " << result->first->v_app[i]  << std:: endl;
 	}
+
 
 	auto end_time = std::chrono::steady_clock::now();
 	auto elapsed_ns = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 	std::cout << elapsed_ns.count() << " ns\n";
+	delete result;
 	system("pause");
 	return 0;
 }

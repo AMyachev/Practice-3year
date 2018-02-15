@@ -10,7 +10,6 @@
 
 using std::vector;
 typedef std::pair<int16_t, int16_t> edge;
-typedef std::pair<int16_t, int16_t> appointment;
 
 class graph {
 	int16_t count_vertex;
@@ -40,21 +39,22 @@ bool verify_input_data(graph grh, characteristics v_chr);
 vector<vector<edge>>* read_edges(std::istream_iterator<int16_t>& iter);
 
 struct node_decisions_tree {             //TODO sizeof 32 - много
-	std::vector<appointment> v_app;
+	std::vector<int16_t> v_app;
 	node_decisions_tree() {}
-	node_decisions_tree(std::vector<appointment> _v_app) : v_app(_v_app.begin(), _v_app.end()) {};
+	node_decisions_tree(std::vector<int16_t> _v_app) : v_app(_v_app.begin(), _v_app.end()) {};
 };
 
 class method_branches_borders {
 	graph* grh;
 	characteristics* v_chr;
-	void admissible_set(const std::vector<appointment>& v_app, std::set<int16_t>& s_admis);
+	void admissible_set(const vector<int16_t>& v_app, std::set<int16_t>& s_admis);
 public:
-	method_branches_borders(graph* _grh, characteristics* _v_chr) : grh(_grh), v_chr(_v_chr) {};
+	method_branches_borders(graph* _grh, characteristics* _v_chr) : grh(_grh), v_chr(_v_chr){};
 	std::pair<node_decisions_tree*, int>*  process();
-	void complete_best_solution(std::vector<appointment>& v_app);
-	int16_t lower_bound(const std::vector<appointment>& _v_app);
-	int16_t upper_bound(const std::vector<appointment>& _v_app);
+	void complete_best_solution(vector<int16_t>& v_app);
+	int16_t lower_bound(const vector<int16_t>& _v_app);
+	int16_t upper_bound(const vector<int16_t>& _v_app);
+	//int16_t passage_in_depth();
 };
 
 class bad_input {};
