@@ -2,7 +2,6 @@
 
 
 /****************************graph*********************************************/
-graph::graph(vector<vector<edge>>* _edges):edges(_edges), count_vertex(_edges->size()), copy_counter(1){}
 
 graph::graph(const graph & grh)
 {
@@ -15,7 +14,7 @@ graph::graph(const graph & grh)
 void graph::print() {
 	for (int i = 0; i < edges->size(); ++i) {
 		for (int j = 0; j < (*edges)[i].size(); ++j) {
-			std::cout << (*edges)[i][j].first << "  " << (*edges)[i][j].second << std::endl;
+			cout << (*edges)[i][j].first << "  " << (*edges)[i][j].second << std::endl;
 		}
 	}
 }
@@ -25,13 +24,13 @@ graph::~graph() {
 	if (copy_counter == 0) delete edges;
 }
 
-
 /****************************auxiliary*****************************************/
+
 bool verify_input_data(graph grh, characteristics v_chr) {
 	return grh.get_count_vertex() <= v_chr.size();
 }
 
-vector<vector<edge>>* read_edges(std::istream_iterator<int16_t>& iter) {
+vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter) {
 	edge _edge;
 	vector<vector<edge>>* edges = new vector<vector<edge>>();
 	int count_edges = *(iter++);
@@ -52,14 +51,11 @@ vector<vector<edge>>* read_edges(std::istream_iterator<int16_t>& iter) {
 	return edges;
 }
 
-int abs(int val) {
-	return (val < 0) ? -val : val;
-}
-
+inline int abs(int val) { return (val < 0) ? -val : val; }
 
 /****************************method_branches_borders***************************/
 
-void method_branches_borders::admissible_set(const vector<int16_t>& v_app, std::set<int16_t>& s_admis)
+void method_branches_borders::admissible_set(const vector<int16_t>& v_app, set<int16_t>& s_admis)
 {
 	s_admis.insert(v_chr->begin(), v_chr->end());
 	for (int i = 0; i < v_app.size(); ++i) {
@@ -67,11 +63,11 @@ void method_branches_borders::admissible_set(const vector<int16_t>& v_app, std::
 	}
 }
 
-std::pair<node_decisions_tree, int>* method_branches_borders::process()
+pair<node_decisions_tree, int>* method_branches_borders::process()
 {
 	size_t size = 0;
 	node_decisions_tree* temp_node = nullptr;
-	deque algorithm_path;
+	deque_pnode algorithm_path;
 	node_decisions_tree* best_node = new node_decisions_tree();
 	int best_lower_bound = lower_bound(best_node->v_app);
 	int current_upper_bound = 0;
@@ -80,10 +76,10 @@ std::pair<node_decisions_tree, int>* method_branches_borders::process()
 	for (int i = 0; i < algorithm_path.size(); ++i) {
 		current_upper_bound = upper_bound(algorithm_path[i]->v_app);
 		current_lower_bound = lower_bound(algorithm_path[i]->v_app);
-		std::set<int16_t> s_admis;
+		set<int16_t> s_admis;
 		admissible_set(algorithm_path[i]->v_app, s_admis);
 		size = s_admis.size();
-		std::set<int16_t>::iterator iter = s_admis.begin();
+		set<int16_t>::iterator iter = s_admis.begin();
 		if (current_upper_bound < best_lower_bound) continue;
 		if (current_lower_bound >= best_lower_bound) {
 			best_lower_bound = current_lower_bound;
@@ -100,20 +96,20 @@ std::pair<node_decisions_tree, int>* method_branches_borders::process()
 			}
 		}
 	}
-	return new std::pair<node_decisions_tree, int>(*best_node, best_lower_bound);
+	return new pair<node_decisions_tree, int>(*best_node, best_lower_bound);
 }
 
 int16_t method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
-	std::set<int16_t> s_admis;
+	set<int16_t> s_admis;
 	admissible_set(_v_app, s_admis);
-	std::vector<int16_t> v_app(_v_app.begin(), _v_app.end());
+	vector<int16_t> v_app(_v_app.begin(), _v_app.end());
 	size_t size = v_app.size();
 	size_t count = grh->get_count_vertex() - size;
-	std::set<int16_t>::iterator iter = s_admis.begin();
+	set<int16_t>::iterator iter = s_admis.begin();
 	for (int i = 0; i < count; ++i) {
 		v_app.push_back(*(iter++));
 	}
-	const std::vector<std::vector<edge>>* edges = grh->get_edges();
+	const vector<vector<edge>>* edges = grh->get_edges();
 	edge temp_edge;
 	int sum = 0;
 	int temp = 0;
@@ -129,13 +125,13 @@ int16_t method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
 }
 
 int16_t method_branches_borders::upper_bound(const vector<int16_t>& _v_app) {
-	std::set<int16_t> s_admis;
+	set<int16_t> s_admis;
 	admissible_set(_v_app, s_admis);
-	std::vector<int16_t> v_app(_v_app.begin(), _v_app.end());
+	vector<int16_t> v_app(_v_app.begin(), _v_app.end());
 	int size = v_app.size();
 	int w_max_ad = *(--s_admis.end());
 	int w_min_ad = *(s_admis.begin());
-	const std::vector<std::vector<edge>>* edges = grh->get_edges();
+	const vector<vector<edge>>* edges = grh->get_edges();
 	edge temp_edge;
 	int sum = 0;
 	int temp = 0;
@@ -168,11 +164,11 @@ int16_t method_branches_borders::upper_bound(const vector<int16_t>& _v_app) {
 
 void method_branches_borders::complete_best_solution(vector<int16_t>& v_app)
 {
-		std::set<int16_t> s_admis;
+		set<int16_t> s_admis;
 		admissible_set(v_app, s_admis);
 		size_t size = v_app.size();
 		size_t count = grh->get_count_vertex() - size;
-		std::set<int16_t>::iterator iter = s_admis.begin();
+		set<int16_t>::iterator iter = s_admis.begin();
 		for (int i = 0; i < count; ++i) {
 			v_app.push_back(*(iter++));
 		}
