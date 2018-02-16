@@ -2,7 +2,6 @@
 #include <iterator>
 #include <iostream>
 #include <stdint.h>
-#include <algorithm>
 #include <vector>
 #include <deque>
 
@@ -12,11 +11,17 @@ using std::cout;
 using std::vector;
 using std::deque;
 
-typedef pair<int16_t, int16_t> edge;
+typedef pair<int16_t, int16_t> edge;  //первый элемент пары - начало ребра; второй - конец ребра
 
+//TODO описать входные данные
+
+
+
+
+/*Вершина ~ рабочее место; ребро ~ связь между местами; edges[i] - список ребёр идущих из вершины номера i + 1*/
 class graph {
 	int16_t count_vertex;
-	int16_t copy_counter;
+	int16_t copy_counter;                       //кол-во копий графа
 	vector<vector<edge>>* edges;
 public:
 	graph(vector<vector<edge>>* _edges) :edges(_edges), count_vertex(_edges->size()),
@@ -28,21 +33,26 @@ public:
 	~graph();
 };
 
-class characteristics : public std::vector<int16_t> {
+/*Вектор характеристик рабочих*/
+class characteristics : public vector<int16_t> {
 public:
-	characteristics(std::istream_iterator<int16_t>& iter) {
-		int count_weight = *(iter++);
-		for (int i = 0; i < count_weight; ++i)
+	characteristics(istream_iterator<int16_t>& iter) {
+		int count_chr = *(iter++);
+		for (int i = 0; i < count_chr; ++i)
 			this->push_back(*(iter++));
 	}
+	void print();
 };
 
+/*v_app - вектор назначений; элемент v_app[i] - характеристика назначенная на i + 1 - ое место
+v_app может содержать назначения не для всех вершин*/
 struct node_decisions_tree {
-	std::vector<int16_t> v_app;
-	node_decisions_tree() {}
+	vector<int16_t> v_app;
+	node_decisions_tree(): v_app(vector<int16_t>()) {}
 	node_decisions_tree(vector<int16_t> _v_app) : v_app(_v_app.begin(), _v_app.end()) {};
 };
 
+/*Контейнер позволяющий эмулировать обход в ширину*/
 class deque_pnode : public deque<node_decisions_tree*> {
 public:
 	~deque_pnode() {
@@ -56,7 +66,7 @@ class method_branches_borders {
 	characteristics* v_chr;
 	size_t size_chr;
 	size_t size_edges;
-	size_t* hash_sizes;
+	size_t* hash_sizes;    //в (* hash_sizes + i) хранится кол-во рёбер для i + 1 вершины
 public:
 	method_branches_borders(graph* _grh, characteristics* _v_chr) : grh(_grh), v_chr(_v_chr),
 		size_chr(v_chr->size()), size_edges(_grh->get_count_vertex()) {
@@ -76,8 +86,9 @@ public:
 	}
 };
 
-bool verify_input_data(graph grh, characteristics v_chr);
+bool verify_input_data(const graph& grh, const characteristics& v_chr);
 
 vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter);
 
+void bubble_sort(vector<int16_t>& v_app);
 
