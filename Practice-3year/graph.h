@@ -8,15 +8,11 @@
 using std::istream_iterator;
 using std::pair;
 using std::cout;
+using std::endl;
 using std::vector;
 using std::deque;
 
 typedef pair<int16_t, int16_t> edge;  //первый элемент пары - начало ребра; второй - конец ребра
-
-//TODO описать входные данные
-
-
-
 
 /*Вершина ~ рабочее место; ребро ~ связь между местами; edges[i] - список ребёр идущих из вершины номера i + 1*/
 class graph {
@@ -92,3 +88,4 @@ vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter);
 
 void bubble_sort(vector<int16_t>& v_app);
 
+void format_input_data();

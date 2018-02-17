@@ -12,13 +12,13 @@ graph::graph(const graph & grh)
 }
 
 void graph::print() {
-	cout << "---------------graph------------------" << std::endl;
+	cout << "---------------graph------------------" << endl;
 	for (int i = 0; i < edges->size(); ++i) {
 		for (int j = 0; j < (*edges)[i].size(); ++j) {
-			cout << (*edges)[i][j].first << "  " << (*edges)[i][j].second << std::endl;
+			cout << (*edges)[i][j].first << "  " << (*edges)[i][j].second << endl;
 		}
 	}
-	cout << "---------------graph------------------" << std::endl;
+	cout << "---------------graph------------------" << endl;
 }
 
 graph::~graph() {
@@ -28,10 +28,10 @@ graph::~graph() {
 
 /*****************************characteristics**********************************/
 void characteristics::print() {
-	cout << std::endl << "characteristics:  ";
+	cout << endl << "characteristics:  ";
 	for (register int i = 0; i < this->size(); ++i)
 		cout << (*this)[i] << "  ";
-	cout << std::endl;
+	cout << endl;
 }
 
 /****************************auxiliary*****************************************/
@@ -82,6 +82,15 @@ void bubble_sort(vector<int16_t>& v_app) {
 			}
 		}
 	}
+}
+
+void format_input_data() {
+	cout << "--------------input data format-----------------" << endl;
+	cout << "Count edges:" << endl 
+	<< "list of edges:" << endl
+	<< "Count characteristics:" << endl
+	<< "list of characteristics" << endl;
+	cout << "--------------input data format-----------------" << endl;
 }
 
 /****************************method_branches_borders***************************/
