@@ -51,6 +51,7 @@ int main() {
 		cin >> continue_work;
 	} while (continue_work == "y");*/
 	cout << test_verify_input_data() << endl;
+	cout << test_lower_bound() << endl;
 	system("pause");
 	return 0;
 }
