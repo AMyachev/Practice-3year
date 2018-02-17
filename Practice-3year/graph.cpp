@@ -37,7 +37,19 @@ void characteristics::print() {
 /****************************auxiliary*****************************************/
 
 bool verify_input_data(const graph& grh, const characteristics& v_chr) {
-	return grh.get_count_vertex() <= v_chr.size();
+	if (grh.get_count_vertex() > v_chr.size()) return false;
+
+	for (int i = 0; i < v_chr.size(); ++i)                    // Проверка элементов на уникальность
+		for (register int j = 0; i != j, j < v_chr.size(); ++j)
+			if (v_chr[i] == v_chr[j]) return false;
+
+	const vector<vector<edge>>* edges = grh.get_edges();
+	for (int i = 0; i < edges->size(); ++i)                  // Проверяем рёбра на уникальность
+		for (int j = 0; j < (*edges)[i].size(); ++j)
+			for (register int k = 0; j != k, k < (*edges)[i].size(); ++k)
+				if (((*edges)[i][j].first == (*edges)[i][k].first) && ((*edges)[i][j].second == (*edges)[i][k].second))
+					return false;
+	return true;
 }
 
 vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter) {
