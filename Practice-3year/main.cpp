@@ -10,11 +10,11 @@ using std::cin;
 
 
 int main() {
-	/*format_input_data();
+	format_input_data();
 	string continue_work;
 	string name_file;
 	do {
-		cout << "enter the full file name" << endl;
+		cout << endl << "enter the full file name" << endl;
 		cin >> name_file;
 		auto start_time = std::chrono::steady_clock::now();
 		ifstream fin(name_file);
@@ -22,8 +22,10 @@ int main() {
 			istream_iterator<int16_t> iter(fin);
 			graph grh(read_edges(iter));
 			characteristics v_chr(iter);
-			if (verify_input_data(grh, v_chr) == false)
+			if (verify_input_data(grh, v_chr) == false) {
 				cout << "input data do not satisfy the restriction of injection" << endl;
+				continue;
+			}
 			v_chr.bubble_sort();
 			grh.print();
 			v_chr.print();
@@ -49,9 +51,11 @@ int main() {
 		}
 		cout << "continue work? (y or n): " << endl;
 		cin >> continue_work;
-	} while (continue_work == "y");*/
+	} while (continue_work == "y");
 	cout << test_verify_input_data() << endl;
 	cout << test_lower_bound() << endl;
+	cout << test_upper_bound() << endl;
+	cout << test_process() << endl;
 	system("pause");
 	return 0;
 }

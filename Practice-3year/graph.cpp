@@ -104,8 +104,6 @@ bool method_branches_borders::find(const vector<int16_t>& v_app, int16_t check_c
 	return false;
 }
 
-inline int abs(int val) { return (val < 0) ? -val : val; }
-
 void format_input_data() {
 	cout << "--------------input data format-----------------" << endl;
 	cout << "Count edges:" << endl 
