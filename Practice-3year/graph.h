@@ -37,7 +37,9 @@ public:
 		for (int i = 0; i < count_chr; ++i)
 			this->push_back(*(iter++));
 	}
+	characteristics() : vector<int16_t>() {};
 	void print();
+	void bubble_sort();
 };
 
 /*v_app - вектор назначений; элемент v_app[i] - характеристика назначенная на i + 1 - ое место
@@ -85,7 +87,5 @@ public:
 bool verify_input_data(const graph& grh, const characteristics& v_chr);
 
 vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter);
-
-void bubble_sort(vector<int16_t>& v_app);
 
 void format_input_data();

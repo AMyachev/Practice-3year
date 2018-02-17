@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "graph_test.h"
 #include <chrono>
 #include <fstream>
 #include <string>
@@ -9,7 +10,7 @@ using std::cin;
 
 
 int main() {
-	format_input_data();
+	/*format_input_data();
 	string continue_work;
 	string name_file;
 	do {
@@ -21,9 +22,9 @@ int main() {
 			istream_iterator<int16_t> iter(fin);
 			graph grh(read_edges(iter));
 			characteristics v_chr(iter);
-			bubble_sort(v_chr);
 			if (verify_input_data(grh, v_chr) == false)
 				cout << "input data do not satisfy the restriction of injection" << endl;
+			v_chr.bubble_sort();
 			grh.print();
 			v_chr.print();
 
@@ -48,6 +49,8 @@ int main() {
 		}
 		cout << "continue work? (y or n): " << endl;
 		cin >> continue_work;
-	} while (continue_work == "y");
+	} while (continue_work == "y");*/
+	cout << test_verify_input_data() << endl;
+	system("pause");
 	return 0;
 }

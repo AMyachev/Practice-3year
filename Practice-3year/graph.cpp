@@ -34,21 +34,34 @@ void characteristics::print() {
 	cout << endl;
 }
 
+void characteristics::bubble_sort() {
+	for (int i = 0; i < size(); ++i) {
+		for (int j = 0; j < size() - i - 1; ++j) {
+			if ((*this)[j] > (*this)[j + 1]) {
+				(*this)[j] ^= ((*this)[j + 1] ^= (*this)[j]);
+				(*this)[j + 1] ^= (*this)[j];
+			}
+		}
+	}
+}
+
 /****************************auxiliary*****************************************/
 
 bool verify_input_data(const graph& grh, const characteristics& v_chr) {
 	if (grh.get_count_vertex() > v_chr.size()) return false;
 
 	for (int i = 0; i < v_chr.size(); ++i)                    // Проверка элементов на уникальность
-		for (register int j = 0; i != j, j < v_chr.size(); ++j)
-			if (v_chr[i] == v_chr[j]) return false;
+		for (register int j = 0; j < v_chr.size(); ++j)
+			if (i != j)
+				if (v_chr[i] == v_chr[j]) return false;
 
 	const vector<vector<edge>>* edges = grh.get_edges();
 	for (int i = 0; i < edges->size(); ++i)                  // Проверяем рёбра на уникальность
 		for (int j = 0; j < (*edges)[i].size(); ++j)
 			for (register int k = 0; j != k, k < (*edges)[i].size(); ++k)
-				if (((*edges)[i][j].first == (*edges)[i][k].first) && ((*edges)[i][j].second == (*edges)[i][k].second))
-					return false;
+				if (j != k)
+					if (((*edges)[i][j].first == (*edges)[i][k].first) && ((*edges)[i][j].second == (*edges)[i][k].second))
+						return false;
 	return true;
 }
 
@@ -74,6 +87,14 @@ vector<vector<edge>>* read_edges(istream_iterator<int16_t>& iter) {
 	return edges;
 }
 
+vector<int16_t>* read_characteristics(istream_iterator<int16_t>& iter) {
+	vector<int16_t>* vect = new vector<int16_t>();
+	int count_chr = *(iter++);
+	for (int i = 0; i < count_chr; ++i)
+		vect->push_back(*(iter++));
+	return vect;
+}
+
 /*Ищет элемент check_chr в v_app*/
 bool method_branches_borders::find(const vector<int16_t>& v_app, int16_t check_chr)
 {
@@ -84,17 +105,6 @@ bool method_branches_borders::find(const vector<int16_t>& v_app, int16_t check_c
 }
 
 inline int abs(int val) { return (val < 0) ? -val : val; }
-
-void bubble_sort(vector<int16_t>& v_app) {
-	for (int i = 0; i < v_app.size(); ++i) {
-		for (int j = 0; j < v_app.size() - i - 1; ++j) {
-			if (v_app[j] > v_app[j + 1]) {
-				v_app[j] ^= (v_app[j + 1] ^= v_app[j]);
-				v_app[j + 1] ^= v_app[j];
-			}
-		}
-	}
-}
 
 void format_input_data() {
 	cout << "--------------input data format-----------------" << endl;
