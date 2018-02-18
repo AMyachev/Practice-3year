@@ -76,8 +76,8 @@ public:
 	};
 	pair<node_decisions_tree, int>*  process();
 	void complete_best_solution(vector<int16_t>& v_app);
-	int16_t lower_bound(const vector<int16_t>& _v_app);
-	int16_t upper_bound(const vector<int16_t>& _v_app);
+	int lower_bound(const vector<int16_t>& _v_app);
+	int upper_bound(const vector<int16_t>& _v_app);
 	bool find(const vector<int16_t>& v_app, int16_t check_chr);
 	~method_branches_borders() {
 		delete[] hash_sizes;

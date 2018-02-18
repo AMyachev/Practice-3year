@@ -148,7 +148,7 @@ pair<node_decisions_tree, int>* method_branches_borders::process()
 }
 
 /*Чтобы посчитать нижнюю оценку нужно достроить решение*/
-int16_t method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
+int method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
 	vector<int16_t> v_app(_v_app.begin(), _v_app.end());
 	for (int i = 0; v_app.size() != size_edges; ++i) {
 		if (find(v_app, (*v_chr)[i]) == false) v_app.push_back((*v_chr)[i]);
@@ -170,7 +170,7 @@ int16_t method_branches_borders::lower_bound(const vector<int16_t>& _v_app) {
 /*w_max, w_min - максимальная и минимальная характеристики во множестве неназначенных характеристик
 v_chr - упорядоченное(от меньшего к большему) множество характеристик
 check1, check2 - 1(2) показывает, что вершина среди начначенных; 0 - не назначена*/
-int16_t method_branches_borders::upper_bound(const vector<int16_t>& v_app) {
+int method_branches_borders::upper_bound(const vector<int16_t>& v_app) {
 	int16_t w_max = 0;
 	int16_t w_min = 0;
 	for (int i = size_chr - 1; i >= 0; --i)

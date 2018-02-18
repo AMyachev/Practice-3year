@@ -52,10 +52,5 @@ int main() {
 		cout << "continue work? (y or n): " << endl;
 		cin >> continue_work;
 	} while (continue_work == "y");
-	cout << test_verify_input_data() << endl;
-	cout << test_lower_bound() << endl;
-	cout << test_upper_bound() << endl;
-	cout << test_process() << endl;
-	system("pause");
 	return 0;
 }
