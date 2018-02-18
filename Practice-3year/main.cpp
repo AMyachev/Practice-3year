@@ -24,6 +24,7 @@ int main() {
 			characteristics v_chr(iter);
 			if (verify_input_data(grh, v_chr) == false) {
 				cout << "input data do not satisfy the restriction of injection" << endl;
+				system("pause");
 				continue;
 			}
 			v_chr.bubble_sort();
@@ -48,6 +49,7 @@ int main() {
 		}
 		else {
 			cout << "file with this name does not exist" << endl;
+			system("pause");
 		}
 		cout << "continue work? (y or n): " << endl;
 		cin >> continue_work;

@@ -128,14 +128,13 @@ pair<node_decisions_tree, int>* method_branches_borders::process()
 	for (int i = 0; i < algorithm_path.size(); ++i) {
 		current_upper_bound = upper_bound(algorithm_path[i]->v_app);
 		current_lower_bound = lower_bound(algorithm_path[i]->v_app);
-		if (current_upper_bound < best_lower_bound) continue;
-		if (current_lower_bound >= best_lower_bound) {
+		if (current_upper_bound <= best_lower_bound) continue;
+		if (current_lower_bound > best_lower_bound) {
 			best_lower_bound = current_lower_bound;
-			if (current_lower_bound == current_upper_bound) {
-				best_node = algorithm_path[i];
-				continue;
-			}
+			best_node = algorithm_path[i];
 		}
+		if (current_lower_bound == current_upper_bound) continue;
+		//if (algorithm_path[i]->v_app.size() == size_edges) continue;
 		for (int j = 0; j < size_chr; ++j) {
 			if (find(algorithm_path[i]->v_app, (*v_chr)[j]) == false) {
 				temp_node = new node_decisions_tree(algorithm_path[i]->v_app);
@@ -144,6 +143,7 @@ pair<node_decisions_tree, int>* method_branches_borders::process()
 			}
 		}
 	}
+	cout << "The number of elements in the tree: " << algorithm_path.size() << endl;
 	return new pair<node_decisions_tree, int>(*best_node, best_lower_bound);
 }
 
